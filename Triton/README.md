@@ -22,15 +22,22 @@ The second container is not strictly necessary, but I tried to stick the previou
 ```
 docker run -it --add-host host.docker.internal:host-gateway -v ${PWD}/Triton:/workspace/ nvcr.io/nvidia/tritonserver:23.04-py3-sdk bash
 ```
+Then, install some packages for the client:
+```
+pip install -r requirements.txt
+```
+
 *Note: Inside the second container, you cannot access the endpoint of the Triton server via `localhost:8003`. (The reason for that is that `localhost` inside the container is different from `localhost` on the host machine.) A quick fix is to add the `--add-host host.docker.internal:host-gateway` flag. Inside the container, you can then access the host's "localhost" via `host.docker.internal`. A more elegant solution can be achieved by using Docker compose to orchestrate the two containers. (Details omitted)*
 
-Inside the second container, simply run `python client.py`. It should currently say something like
-```
-image.shape after adding batch dim: (1, 640, 480, 3)
-text.shape after adding batch dim: (1, 1)
-The similarity score of this image with text is  0.27882057428359985
-```
-in the console output.
+Inside the second container, simply run `python client.py`. It should give you the predicted classes of the three images 
+
+![Airplane 1](https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%3Fid%3DOIP.Of5n8Mk257GxvWQAhgn5pAHaEM%26pid%3DApi&f=1&ipt=83a6d7af258db93aa13f9850ebe8ca711bb61b99729afb4ea546e340b720f59c&ipo=images)
+
+![Airplane 2](https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%3Fid%3DOIP.c6bwfJFG5wWYxUj4tl1N7gHaE2%26pid%3DApi&f=1&ipt=23140604025fba006eab0078a36dddf291af6cc42dc0800fc186f2dba27ef419&ipo=images)
+
+![Airplane 3](https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%3Fid%3DOIP.IA-C43FHXiXH5bKAlbmBhQHaEo%26pid%3DApi&f=1&ipt=741c858eff026dc10ebeb670c7403f66cb56ccc55a343517c449d0a10d056a0a&ipo=images)
+
+in the console.
 
 ### A tip for debugging: Model (un)loading
 
