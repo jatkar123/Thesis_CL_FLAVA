@@ -31,9 +31,9 @@ class TritonPythonModel:
             # )  # I want this to be a list of strings and then show similarity score between each string and the given one image
 
             text = pb_utils.get_input_tensor_by_name(request, "text").as_numpy()
+            self.logger.log_info("Shape of text: " + str(text.shape))
             self.logger.log_info(str(text))
-            # texts = [t.decode("UTF-8") for t in [text.tolist()]]
-            texts = [text.item().decode("UTF-8")]
+            texts = [t.decode("UTF-8") for t in text.tolist()[0]]
 
             self.logger.log_info(str(texts))
 
@@ -56,12 +56,11 @@ class TritonPythonModel:
             text_features /= text_features.norm(dim=-1, keepdim=True)
             similarity = text_features.cpu().numpy() @ image_features.cpu().numpy().T
             self.logger.log_info(
-                "Similarity before returning InferenceResponse: "
-                + str(similarity.item())
+                "Similarity before returning InferenceResponse:\n" + str(similarity.T)
             )
 
             inference_response = pb_utils.InferenceResponse(
-                [pb_utils.Tensor("similarity", similarity)]
+                [pb_utils.Tensor("similarity", similarity.T)]
             )
             responses.append(inference_response)
         return responses
